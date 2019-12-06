@@ -4,7 +4,7 @@ const axios = require('axios')
 var cityList = require("./city.list.json");
 var cors = require('cors')
 
-app.use(cors());
+app.use(express.json());
 const {ENVIRONMENT,PORT} = process.env;
 const db = {
   posts: [
