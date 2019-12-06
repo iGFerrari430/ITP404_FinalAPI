@@ -8,7 +8,11 @@ const corsOptions = {
   origin: 'http://hallowed-light.surge.sh'
 }
 
-
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 app.use(express.json());
 const {ENVIRONMENT,PORT} = process.env;
 const db = {
