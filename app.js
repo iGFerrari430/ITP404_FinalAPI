@@ -8,8 +8,13 @@ const corsOptions = {
   origin: 'http://hallowed-light.surge.sh'
 }
 
-app.use(express.json());
+//app.use(express.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
+  next();
+});
 const {ENVIRONMENT,PORT} = process.env;
 const db = {
   posts: [
@@ -34,7 +39,7 @@ const db = {
   ]
 };
 
-app.get("/searchCity/:cityName",cors(corsOptions),(request,response) => {
+app.get("/searchCity/:cityName",cors(),(request,response) => {
   const name = request.params.cityName;
   const cities = cityList.filter((city) => {
     return city.name === name
@@ -42,7 +47,7 @@ app.get("/searchCity/:cityName",cors(corsOptions),(request,response) => {
 
   response.json(cities);
 })
-app.get("/searchId/:cityId",cors(corsOptions),async(request,response) => {
+app.get("/searchId/:cityId",cors(),async(request,response) => {
   const cityId = request.params.cityId;
   const searchURL = `http://api.openweathermap.org/data/2.5/weather?id=${cityId}&units=metric&APPID=65b4d360dbe666bf7718ee48e12731f8`;
   try {
@@ -54,7 +59,7 @@ app.get("/searchId/:cityId",cors(corsOptions),async(request,response) => {
     response.status(404).send("id does not exist")
   }
 })
-app.post("/authUser",cors(corsOptions),(request,response) => {
+app.post("/authUser",cors(),(request,response) => {
   let user = db.users.find((user) => {
     return request.body.username === user.username;
   });
@@ -77,7 +82,7 @@ app.post("/authUser",cors(corsOptions),(request,response) => {
     response.send();
   }
 })
-app.put("/changePassword",cors(corsOptions),(request,response) => {
+app.put("/changePassword",cors(),(request,response) => {
   let user = db.users.find((user) => {
     return request.body.username === user.username;
   });
@@ -85,7 +90,7 @@ app.put("/changePassword",cors(corsOptions),(request,response) => {
   user.password = request.body.password;
   response.send();
 })
-app.delete("/deleteHistory/:username",cors(corsOptions),(request,response) => {
+app.delete("/deleteHistory/:username",cors(),(request,response) => {
   let user = db.users.find((user) => {
     return request.params.username === user.username;
   });
@@ -93,7 +98,7 @@ app.delete("/deleteHistory/:username",cors(corsOptions),(request,response) => {
   user.history = [];
   response.send();
 })
-app.post("/addHistory",cors(corsOptions),(request,response) => {
+app.post("/addHistory",cors(),(request,response) => {
   let user = db.users.find((user) => {
     return request.body.username === user.username;
   })
@@ -103,21 +108,21 @@ app.post("/addHistory",cors(corsOptions),(request,response) => {
   user.history.push(va);
   response.send();
 })
-app.get("/getHistory/:userName",cors(corsOptions),(request,response) => {
+app.get("/getHistory/:userName",cors(),(request,response) => {
   let user = db.users.find((user) => {
     return request.params.userName === user.username;
   });
 
   response.json(user.history);
 })
-app.get("/userProfile/:username",cors(corsOptions),(request,response) => {
+app.get("/userProfile/:username",cors(),(request,response) => {
   let user = db.users.find((user) => {
     return request.params.username === user.username;
   });
 
   response.json(user);
 })
-app.get("/api/everything",cors(corsOptions),(request,response) => {
+app.get("/api/everything",cors(),(request,response) => {
   response.json(db);
 });
 
