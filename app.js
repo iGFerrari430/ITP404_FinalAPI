@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const axios = require('axios')
 var cityList = require("./city.list.json");
-app.use(express.json());
+var cors = require('cors')
+
+app.use(cors());
 const {ENVIRONMENT,PORT} = process.env;
 const db = {
   posts: [
